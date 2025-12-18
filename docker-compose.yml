@@ -1,0 +1,68 @@
+version: '3.8'
+
+services:
+  # Database service
+  db:
+    image: mariadb:10.11
+    container_name: nodegoat_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1100CC!
+      MYSQL_DATABASE: 1100CC
+      MYSQL_USER: 1100CC_cms
+      MYSQL_PASSWORD: 1100CC!
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init-db:/docker-entrypoint-initdb.d
+    networks:
+      - nodegoat_network
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Web server with PHP
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nodegoat_web
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DB_HOST=db
+      - DB_NAME=1100CC
+      - DB_USER=1100CC_cms
+      - DB_PASSWORD=1100CC!
+      - DB_USER_HOME=1100CC_home
+      - DB_PASSWORD_HOME=1100CC!
+      - APACHE_DOCUMENT_ROOT=/var/1100CC/APP
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_UPLOAD_MAX_FILESIZE=100M
+      - PHP_POST_MAX_SIZE=100M
+      - PHP_MAX_EXECUTION_TIME=300
+    volumes:
+      - ./1100CC:/var/1100CC
+      - web_cache:/var/1100CC/APP/CACHE
+      - web_storage:/var/1100CC/APP/STORAGE
+    networks:
+      - nodegoat_network
+    ports:
+      - "80:80"
+
+volumes:
+  db_data:
+    driver: local
+  web_cache:
+    driver: local
+  web_storage:
+    driver: local
+
+networks:
+  nodegoat_network:
+    driver: bridge
