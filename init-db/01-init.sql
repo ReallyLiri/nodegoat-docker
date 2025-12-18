@@ -14,15 +14,15 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON 1100CC.* TO '1100CC_cms'@'%';
 GRANT SELECT ON 1100CC.* TO '1100CC_home'@'%';
 
 -- Grant privileges for nodegoat_cms database
-GRANT SELECT, INSERT, UPDATE, DELETE ON nodegoat_cms.* TO '1100CC_cms'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, CREATE TEMPORARY TABLES, SHOW VIEW, CREATE VIEW, EXECUTE ON nodegoat_cms.* TO '1100CC_cms'@'%';
 GRANT SELECT ON nodegoat_cms.* TO '1100CC_home'@'%';
 
 -- Grant privileges for nodegoat_home database
-GRANT SELECT, INSERT, UPDATE, DELETE ON nodegoat_home.* TO '1100CC_cms'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, CREATE TEMPORARY TABLES, SHOW VIEW, CREATE VIEW, EXECUTE ON nodegoat_home.* TO '1100CC_cms'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON nodegoat_home.* TO '1100CC_home'@'%';
 
 -- Grant privileges for nodegoat_content database
-GRANT SELECT, INSERT, UPDATE, DELETE, DROP ON nodegoat_content.* TO '1100CC_cms'@'%';
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX, CREATE TEMPORARY TABLES, SHOW VIEW, CREATE VIEW, EXECUTE ON nodegoat_content.* TO '1100CC_cms'@'%';
 GRANT SELECT, INSERT, UPDATE, DELETE ON nodegoat_content.* TO '1100CC_home'@'%';
 
 -- Grant privileges for nodegoat_temp database

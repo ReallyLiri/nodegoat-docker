@@ -1,16 +1,13 @@
-version: '3.8'
-
 services:
-  # Database service
   db:
     image: mariadb:10.11
     container_name: nodegoat_db
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: 1100CC!
+      MYSQL_ROOT_PASSWORD: iiooCC
       MYSQL_DATABASE: 1100CC
       MYSQL_USER: 1100CC_cms
-      MYSQL_PASSWORD: 1100CC!
+      MYSQL_PASSWORD: iiooCC
     volumes:
       - db_data:/var/lib/mysql
       - ./init-db:/docker-entrypoint-initdb.d
@@ -24,7 +21,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # Web server with PHP
   web:
     build:
       context: .
@@ -38,9 +34,9 @@ services:
       - DB_HOST=db
       - DB_NAME=1100CC
       - DB_USER=1100CC_cms
-      - DB_PASSWORD=1100CC!
+      - DB_PASSWORD=iiooCC
       - DB_USER_HOME=1100CC_home
-      - DB_PASSWORD_HOME=1100CC!
+      - DB_PASSWORD_HOME=iiooCC
       - APACHE_DOCUMENT_ROOT=/var/1100CC/APP
       - PHP_MEMORY_LIMIT=512M
       - PHP_UPLOAD_MAX_FILESIZE=100M

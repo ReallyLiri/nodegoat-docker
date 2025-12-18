@@ -18,7 +18,7 @@ cp -r nodegoat/APP/nodegoat 1100CC/APP/
 cp -r nodegoat/APP/SETTINGS/nodegoat 1100CC/APP/SETTINGS/
 mkdir -p 1100CC/APP/STORAGE/nodegoat/CMS/css
 cp nodegoat/APP/STORAGE/nodegoat/CMS/css/templates.css 1100CC/APP/STORAGE/nodegoat/CMS/css/
-touch 1100CC/APP/alias
+echo "<your domain or localhost> nodegoat" > 1100CC/APP/alias
 mkdir -p 1100CC/APP/CACHE
 mkdir -p 1100CC/SAFE/nodegoat
 ```
@@ -28,19 +28,48 @@ Next we can build and start the containers:
 ```bash
 docker-compose build
 docker-compose up -d
+
+docker-compose exec web chown -R www-data:www-data /var/1100CC
+docker-compose exec web chmod -R 755 /var/1100CC/APP
+docker-compose exec web chmod -R 775 /var/1100CC/APP/CACHE
+docker-compose exec web chmod -R 775 /var/1100CC/APP/STORAGE
 ```
 
 The database needs time to initialize. Check the database health:
 
 ```bash
-docker-compose exec db mysql -u root -p1100CC -e "SHOW DATABASES;"
+docker-compose exec db mysql -u root -piiooCC -e "SHOW DATABASES;"
 ```
 
 Then you can import sql schemas:
 
 ```bash
-docker-compose exec -T db mysql -u1100CC_cms -pcms_password 1100CC < 1100CC/setup/1100CC.sql
-docker-compose exec -T db mysql -u1100CC_cms -pcms_password nodegoat_cms < nodegoat/setup/nodegoat_cms.cms_labels.sql
+import_sql() {
+    local DB_NAME=$1
+    local SQL_FILE=$2
+    
+    if [ ! -f "$SQL_FILE" ]; then
+        echo "⚠ Warning: SQL file '$SQL_FILE' not found, skipping..."
+        return 1
+    fi
+    
+    echo "Importing $SQL_FILE into $DB_NAME..."
+    docker-compose exec -T db mysql -u1100CC_cms -piiooCC "$DB_NAME" < "$SQL_FILE"
+    return $?
+}
+ 
+import_sql "1100CC" "1100CC/setup/1100CC.sql"
+import_sql "1100CC" "1100CC/setup/1100CC.core_language.sql"
+import_sql "1100CC" "1100CC/setup/1100CC.core_labels.en.sql"
+import_sql "nodegoat_cms" "1100CC/setup/SITE_cms.sql"
+import_sql "nodegoat_cms" "1100CC/setup/SITE_cms.default.sql"
+import_sql "nodegoat_home" "1100CC/setup/SITE_home.sql"
+import_sql "nodegoat_cms" "nodegoat/setup/nodegoat_cms.cms_labels.sql"
+import_sql "nodegoat_cms" "nodegoat/setup/nodegoat_cms.various.sql"
+import_sql "nodegoat_home" "nodegoat/setup/nodegoat_home.sql"
+import_sql "nodegoat_home" "nodegoat/setup/nodegoat_home.changes.sql"
+import_sql "nodegoat_home" "nodegoat/setup/nodegoat_home.various.sql"
+import_sql "nodegoat_content" "nodegoat/setup/nodegoat_content.sql"
 ```
 
 Open your browser on http://localhost (or on your public ip/domain) and follow the 1100CC setup wizard.
