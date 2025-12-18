@@ -33,6 +33,10 @@ docker-compose exec web chown -R www-data:www-data /var/1100CC
 docker-compose exec web chmod -R 755 /var/1100CC/APP
 docker-compose exec web chmod -R 775 /var/1100CC/APP/CACHE
 docker-compose exec web chmod -R 775 /var/1100CC/APP/STORAGE
+docker-compose exec web mkdir -p /var/1100CC/SAFE/nodegoat
+docker-compose exec web bash -c "echo 'iiooCC' > /var/1100CC/SAFE/nodegoat/database_cms.pass"
+docker-compose exec web bash -c "echo 'iiooCC' > /var/1100CC/SAFE/nodegoat/database_home.pass"
+docker-compose exec web bash -c "echo 'mariadb' > /var/1100CC/APP/SETTINGS/nodegoat/database"
 ```
 
 The database needs time to initialize. Check the database health:
